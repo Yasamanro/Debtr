@@ -1,14 +1,17 @@
 from flask import Flask
 from home.views import home_view
 import itertools
-from splitwise import Splitwise
+from splitwise import Splitwise	
+
+
+app = Flask(__name__)  # Create application object
+
 
 @app.route("/")
 def home():
 	return "this is the main page"
 
 def create_app(config_file):
-	app = Flask(__name__)  # Create application object
 	app.config.from_pyfile(config_file)  # Configure application with settings file, not strictly necessary
 	app.register_blueprint(home_view)  # Register url's so application knows what to do
 	return app
@@ -82,5 +85,5 @@ def simplify_debts(debts):
 if __name__ == "__main__":
 
 	show_transactions(simplify_debts(debts))	
-	app = create_app('settingslocal.py')  # Create application with our config file
-	app.run()  # Run our application
+	a = create_app('settingslocal.py')  # Create application with our config file
+	a.run()  # Run our application
