@@ -24,7 +24,6 @@ def render_welcome():
 	#print([(group.getName(),group.getId()) for group in groups])
 
 	expenses = s.getExpenses(group_id=group_id,limit=255)
-	print(len(expenses))
 	group = s.getGroup(group_id)
 	global currency
 	currency = group.country_code if group.country_code else 'CAD'
@@ -36,13 +35,13 @@ def render_welcome():
 		payment.getAmount()) for payment in expense.getRepayments() if payment.getFromUser() in people_dict and payment.getToUser() in people_dict] for expense in expenses]
 	
 	formatted_expenses = [e for e in formatted_expenses if len(e) != 0]
-	print(formatted_expenses)
 
 	debts = np.concatenate(formatted_expenses)
 
 	#getCurrencyCode
 
 	return(f'Welcome {user.getFirstName()}<br>\
+			Your preferred currency is: {currency}<br>\
 			Your group users are: {people}<br>\
 			Your current expenses are: {show_transactions(simplify_debts(debts))}')
 
@@ -80,25 +79,7 @@ def create_app(config_file):
 	app.register_blueprint(home_view)  # Register url's so application knows what to do
 	return app
 
-# TODO: mine data from Splitwise
 # Code for simplifying debt taken from https://terbium.io/2020/09/debt-simplification/
-'''
-people = ["Grace", "Ivan", "Judy", "Luke", "Mallory"]
-debts = [
-    ("Grace", "Ivan", 5),
-    ("Grace", "Judy", 3),
-    ("Ivan", "Grace", 2),
-    ("Ivan", "Mallory", 5),
-    ("Judy", "Grace", 10),
-    ("Judy", "Luke", 4),
-    ("Judy", "Mallory", 6),
-    ("Judy", "Mallory", 2),
-    ("Luke", "Ivan", 4),
-    ("Mallory", "Grace", 15),
-    ("Mallory", "Luke", 6),
-    ("Mallory", "Judy", 11),
-]
-'''
 
 def show_transactions(transactions):
 	transaction_list = []
