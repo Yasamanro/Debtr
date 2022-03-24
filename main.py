@@ -12,7 +12,7 @@ s = Splitwise(client_id,"ffBc3UncyGtK8dS6coOOc7EiJz4qMW2zHjE6Cu0B")
 
 @app.route("/")
 def home():
-	return('this is the home page')
+	return authorize()
 
 @app.route('/welcome')
 def render_welcome():
