@@ -1,26 +1,57 @@
-from flask import Flask
+from flask import Flask, redirect, request, url_for, session
 from home.views import home_view
 import itertools
 from splitwise import Splitwise	
-
+import requests
 
 app = Flask(__name__)  # Create application object
 
+# Splitwise credentials
+client_id = "iA4axoPLQVBOUOilnnS9XTNATl24sjOQITrNIt2h"
+s = Splitwise(client_id,"ffBc3UncyGtK8dS6coOOc7EiJz4qMW2zHjE6Cu0B")
 
 @app.route("/")
 def home():
-	return "this is the main page"
+	return('this is the home page')
+
+@app.route('/welcome')
+def render_welcome():
+	user = s.getCurrentUser()
+	return(f'Welcome {user.getFirstName()}')
+
+@app.route("/authorize")
+def authorize():
+	'''
+	try:
+		with open('credentials.txt','r') as cred_file:
+			access_token = cred_file.readlines()
+			s.setAccessToken(eval(access_token))
+			return render_welcome()
+	except Exception as e:
+		print(f'{e}, trying redirect...')
+ 	'''
+	global oauth_token_secret
+	url, oauth_token_secret = s.getAuthorizeURL()
+	return redirect(url)
+
+@app.route("/authorize/callback")
+def authorize_callback():
+	oauth_token    = request.args.get('oauth_token')
+	oauth_verifier = request.args.get('oauth_verifier')
+	#global access_token
+	access_token   = s.getAccessToken(oauth_token, oauth_token_secret, oauth_verifier)
+	s.setAccessToken(access_token)
+
+	#with open('credentials.txt','w') as cred_file:
+	#	cred_file.write(str(access_token))
+
+	return render_welcome()
+
 
 def create_app(config_file):
 	app.config.from_pyfile(config_file)  # Configure application with settings file, not strictly necessary
 	app.register_blueprint(home_view)  # Register url's so application knows what to do
 	return app
-
-# TODO: get people and debts from Splitwise API
-splitwise_instance = Splitwise("iA4axoPLQVBOUOilnnS9XTNATl24sjOQITrNIt2h","ffBc3UncyGtK8dS6coOOc7EiJz4qMW2zHjE6Cu0B")
-url, secret = splitwise_instance.getAuthorizeURL()
-
-print(url,secret)
 
 # Code for simplifying debt taken from https://terbium.io/2020/09/debt-simplification/
 
