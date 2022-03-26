@@ -1,9 +1,9 @@
-from flask import Flask, redirect, request, url_for, session
+from flask import Flask, redirect, request
 from home.views import home_view
 import itertools
 from splitwise import Splitwise	
-import requests
 import numpy as np
+from coinapi_rest_v1.restapi import CoinAPIv1
 
 app = Flask(__name__)  # Create application object
 
@@ -38,12 +38,13 @@ def render_welcome():
 
 	debts = np.concatenate(formatted_expenses)
 
-	#getCurrencyCode
+	exchange_rates = None #get_rates('CAD','ETH')
 
-	return(f'Welcome {user.getFirstName()}<br>\
+	return(f"Welcome {user.getFirstName()}<br>\
 			Your preferred currency is: {currency}<br>\
 			Your group users are: {people}<br>\
-			Your current expenses are: {show_transactions(simplify_debts(debts))}')
+			Your current expenses are: {show_transactions(simplify_debts(debts))}<br>\
+			Today's exchange rates are:{exchange_rates}")
 
 @app.route("/authorize")
 def authorize():
@@ -78,6 +79,26 @@ def create_app(config_file):
 	app.config.from_pyfile(config_file)  # Configure application with settings file, not strictly necessary
 	app.register_blueprint(home_view)  # Register url's so application knows what to do
 	return app
+
+# Code for getting exchange rates
+def get_coin_api_rate(from_currency,to_currency):
+	key = 'B65AF4B5-9E76-4833-A220-733C6259FEF5'
+	api = CoinAPIv1(key)
+
+	exchange_rate = api.exchange_rates_get_specific_rate(from_currency, to_currency)
+
+	return (from_currency, to_currency, exchange_rate)
+
+def get_rates(from_currency,to_currency):
+	exchanges = [get_coin_api_rate]
+
+	rates = [exchange(from_currency,to_currency) for exchange in exchanges]
+	return rates
+
+def get_median_rate(exchange_rates):
+	values = [rate[-1] for rate in exchange_rates]
+	return np.median(values)
+
 
 # Code for simplifying debt taken from https://terbium.io/2020/09/debt-simplification/
 
