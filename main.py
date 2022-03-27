@@ -1,10 +1,13 @@
 from flask import Flask, redirect, request
+import requests
+import pandas as pd
 from home.views import home_view
 import itertools
 from splitwise import Splitwise	
 import numpy as np
 from coinapi_rest_v1.restapi import CoinAPIv1
 import ssl
+from nomics import Nomics
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -92,22 +95,45 @@ def create_app(config_file):
 	return app
 
 # Code for getting exchange rates
+def get_coinlayer_rate(from_currency,to_currency):
+    api_key = '0e7274782bc1bbd5cff98b0b0f3eee58'
+
+    date = pd.to_datetime('today').date()
+
+    prices = []
+    try:
+        api_url = f'http://api.coinlayer.com/{date}&symbols={to_currency}&target={from_currency}?access_key={api_key}'
+        raw = requests.get(api_url).json()
+        val = []
+        val.append(raw['rates'])
+        price = val[0][f'{to_currency}']
+    except Exception as e:
+    	price = np.nan
+
+    return (from_currency,to_currency, 1.0/price)	
+
+def get_nomics_rate(from_currency,to_currency):
+	key = '278552191c1f206e5389c4770ce07214a6f23ea3'
+	nomics = Nomics(key)
+	data = nomics.Currencies.get_currencies(ids = to_currency,convert=from_currency)
+	return (from_currency,to_currency,1.0/float(data[0]['price']))
+
 def get_coin_api_rate(from_currency,to_currency):
 	key = 'B65AF4B5-9E76-4833-A220-733C6259FEF5'
 	api = CoinAPIv1(key)
 
-	exchange_rate = api.exchange_rates_get_specific_rate(from_currency, to_currency)
+	data = api.exchange_rates_get_specific_rate(from_currency, to_currency)
 
-	return (from_currency, to_currency, exchange_rate['rate'])
+	return (from_currency, to_currency, data['rate'])
 
 def get_rates(from_currency,to_currency):
-	exchanges = [get_coin_api_rate]
+	exchanges = [get_coin_api_rate,get_nomics_rate,get_coinlayer_rate]
 
 	rates = [exchange(from_currency,to_currency) for exchange in exchanges]
 	return rates
 
 def get_median_rate(exchange_rates):
-	values = [rate[-1] for rate in exchange_rates]
+	values = [rate[-1] for rate in exchange_rates if not np.isnan(rate[-1])]
 	return np.median(values)
 
 def convert_transactions(transactions,exchange_rate):
