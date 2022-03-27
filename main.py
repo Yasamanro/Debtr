@@ -4,6 +4,9 @@ import itertools
 from splitwise import Splitwise	
 import numpy as np
 from coinapi_rest_v1.restapi import CoinAPIv1
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 app = Flask(__name__)  # Create application object
 
@@ -37,14 +40,22 @@ def render_welcome():
 	formatted_expenses = [e for e in formatted_expenses if len(e) != 0]
 
 	debts = np.concatenate(formatted_expenses)
+	simplified_debts = simplify_debts(debts)
 
-	exchange_rates = None #get_rates('CAD','ETH')
+
+	#convert transactions
+	cryptocurrency = 'ETH'
+	exchange_rates = get_rates(currency,cryptocurrency)
+	median_exchange_rate = get_median_rate(exchange_rates)
+	converted_debts = convert_transactions(simplified_debts,median_exchange_rate)
+
 
 	return(f"Welcome {user.getFirstName()}<br>\
 			Your preferred currency is: {currency}<br>\
 			Your group users are: {people}<br>\
-			Your current expenses are: {show_transactions(simplify_debts(debts))}<br>\
-			Today's exchange rates are:{exchange_rates}")
+			Your current expenses are: {show_transactions(simplified_debts,currency)}<br>\
+			Today's exchange rates are:{exchange_rates}<br>\
+			Your converted expenses are:{show_transactions(converted_debts,cryptocurrency)}")
 
 @app.route("/authorize")
 def authorize():
@@ -87,7 +98,7 @@ def get_coin_api_rate(from_currency,to_currency):
 
 	exchange_rate = api.exchange_rates_get_specific_rate(from_currency, to_currency)
 
-	return (from_currency, to_currency, exchange_rate)
+	return (from_currency, to_currency, exchange_rate['rate'])
 
 def get_rates(from_currency,to_currency):
 	exchanges = [get_coin_api_rate]
@@ -99,16 +110,24 @@ def get_median_rate(exchange_rates):
 	values = [rate[-1] for rate in exchange_rates]
 	return np.median(values)
 
-
-# Code for simplifying debt taken from https://terbium.io/2020/09/debt-simplification/
-
-def show_transactions(transactions):
+def convert_transactions(transactions,exchange_rate):
 	transaction_list = []
 	for (debtor, creditor, value) in transactions:
 		if value > 0:
-			transaction_list.append(f"{debtor} owes {creditor} ${value}")
+			transaction_list.append((debtor,creditor,exchange_rate*value))
 		else:
-			transaction_list.append(f"{creditor} owes {debtor} ${-value}")
+			transaction_list.append((creditor,debtor,-exchange_rate*value))
+	return transaction_list
+
+# Code for simplifying debt taken from https://terbium.io/2020/09/debt-simplification/
+
+def show_transactions(transactions, currency_code):
+	transaction_list = []
+	for (debtor, creditor, value) in transactions:
+		if value > 0:
+			transaction_list.append(f"{debtor} owes {creditor} {value} {currency_code}")
+		else:
+			transaction_list.append(f"{creditor} owes {debtor} {-value} {currency_code}")
 	return transaction_list
 
 def compute_balances(debts):
