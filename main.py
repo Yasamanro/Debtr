@@ -52,7 +52,7 @@ def render_welcome():
 	median_exchange_rate = get_median_rate(exchange_rates)
 	converted_debts = convert_transactions(simplified_debts,median_exchange_rate)
 
-	return render_template('index.html', name=user.getFirstName())
+	return render_template('index.html', name=user.getFirstName(), currency=currency, expenses=show_transactions(simplified_debts,currency))
 
 
 	# return(f"Welcome {user.getFirstName()}<br>\
@@ -89,6 +89,14 @@ def authorize_callback():
 	#	cred_file.write(str(access_token))
 
 	return render_welcome()
+
+@app.route('/crypto_submit', methods=["GET", "POST"])
+def submit_crypto():
+    if request.method == "POST":
+        return render_template('crypto_submit.html')
+    return render_template('crypto_submit.html')
+
+        # return render_template('crypto_submit.html', ButtonPressed = ButtonPressed)
 
 
 def create_app(config_file):
@@ -153,9 +161,9 @@ def show_transactions(transactions, currency_code):
 	transaction_list = []
 	for (debtor, creditor, value) in transactions:
 		if value > 0:
-			transaction_list.append(f"{debtor} owes {creditor} {value} {currency_code}")
+			transaction_list.append(f"{debtor} owes {creditor} {round(value,2)} {currency_code}")
 		else:
-			transaction_list.append(f"{creditor} owes {debtor} {-value} {currency_code}")
+			transaction_list.append(f"{creditor} owes {debtor} {round(-value,2)} {currency_code}")
 	return transaction_list
 
 def compute_balances(debts):

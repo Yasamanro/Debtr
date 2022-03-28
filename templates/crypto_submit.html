@@ -52,10 +52,7 @@
         <header class="masthead">
             <div class="container px-5">
                 <div class="container">
-                    <h3 class="display-3 mb-3">Your Expenses</h3>
-                    <div>
-                        Preferred Fiat Currency: {{ currency }}
-                    </div>
+                    <h3 class="display-3 mb-3">Exchange Rate</h3>
 
                     <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
@@ -75,7 +72,7 @@
                                 </div>
                             </div>
                         </div>
-                    <form method="post">    
+                    <form>    
                         <div class="form-group">
                             <label for="currency">Choose Cryptocurrency for conversion: </label>
                             <select id="currency" name="currency">
@@ -85,8 +82,8 @@
                             </select>
                         </div>
                         <div>
-                            <button id="cryptoSubmitButton" type="submit" class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" 
-                                    style="background-color: #2B0245">
+                            <button type="submit" class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" 
+                                    style="background-color: #2B0245" value="submit_crypto">
                                 Submit
                             </button>
                         </div>
@@ -182,10 +179,5 @@
         <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
-<!--         <script type="text/javascript">
-            document.getElementById("cryptoSubmitButton").onclick = function () {
-            location.href = "http://127.0.0.1:5000/crypto_submit";
-        };
-        </script> -->
     </body>
 </html>
