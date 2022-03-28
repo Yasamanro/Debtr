@@ -75,7 +75,7 @@
                                 </div>
                             </div>
                         </div>
-                    <form method="post">    
+                    <form>    
                         <div class="form-group">
                             <label for="currency">Choose Cryptocurrency for conversion: </label>
                             <select id="currency" name="currency">
@@ -85,12 +85,13 @@
                             </select>
                         </div>
                         <div>
-                            <button id="cryptoSubmitButton" type="submit" class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" 
-                                    style="background-color: #2B0245">
-                                Submit
-                            </button>
+
                         </div>
                     </form>
+                    <button id="cryptoSubmitButton" class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" 
+                    style="background-color: #2B0245" onclick="document.location.href = '/crypto_submit?currency=' + document.getElementById('currency').value;">
+                                Submit
+                    </button>
                 </div>
             </div>
         </header>

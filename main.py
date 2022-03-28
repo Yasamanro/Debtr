@@ -90,11 +90,10 @@ def authorize_callback():
 
 	return render_welcome()
 
-@app.route('/crypto_submit', methods=["GET", "POST"])
+@app.route('/crypto_submit')
 def submit_crypto():
-    if request.method == "POST":
-        return render_template('crypto_submit.html')
-    return render_template('crypto_submit.html')
+	currency_form = request.args.get('currency')
+	return render_template('crypto_submit.html',currency=currency_form)
 
         # return render_template('crypto_submit.html', ButtonPressed = ButtonPressed)
 
