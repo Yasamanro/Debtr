@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, render_template
 import requests
 import pandas as pd
 from home.views import home_view
@@ -11,7 +11,7 @@ from nomics import Nomics
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-app = Flask(__name__)  # Create application object
+app = Flask(__name__,template_folder='templates')  # Create application object
 
 # Splitwise credentials
 client_id = "iA4axoPLQVBOUOilnnS9XTNATl24sjOQITrNIt2h"
@@ -52,13 +52,15 @@ def render_welcome():
 	median_exchange_rate = get_median_rate(exchange_rates)
 	converted_debts = convert_transactions(simplified_debts,median_exchange_rate)
 
+	return render_template('index.html', name=user.getFirstName())
 
-	return(f"Welcome {user.getFirstName()}<br>\
-			Your preferred currency is: {currency}<br>\
-			Your group users are: {people}<br>\
-			Your current expenses are: {show_transactions(simplified_debts,currency)}<br>\
-			Today's exchange rates are:{exchange_rates}<br>\
-			Your converted expenses are:{show_transactions(converted_debts,cryptocurrency)}")
+
+	# return(f"Welcome {user.getFirstName()}<br>\
+	# 		Your preferred currency is: {currency}<br>\
+	# 		Your group users are: {people}<br>\
+	# 		Your current expenses are: {show_transactions(simplified_debts,currency)}<br>\
+	# 		Today's exchange rates are:{exchange_rates}<br>\
+	# 		Your converted expenses are:{show_transactions(converted_debts,cryptocurrency)}")
 
 @app.route("/authorize")
 def authorize():
