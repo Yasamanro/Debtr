@@ -90,6 +90,7 @@ def authorize_callback():
 
 	return render_welcome()
 
+# Page 2 - Crypto Information Submission
 @app.route('/crypto_submit')
 def submit_crypto():
 	user = s.getCurrentUser()
@@ -118,6 +119,12 @@ def submit_crypto():
 
 
 	return render_template('crypto_submit.html',name=user.getFirstName(),currency=currency_form, rates=exchange_rates, median_rate=median_exchange_rate, converted_expenses=show_crypto_transactions(converted_debts,currency_form.upper()))
+
+# Page 3 - Summary/Confirmation of transaction
+@app.route('/transaction_confirmation')
+def confirmation():
+	return render_template('confirmation.html')
+
 
 def create_app(config_file):
 	app.config.from_pyfile(config_file)  # Configure application with settings file, not strictly necessary

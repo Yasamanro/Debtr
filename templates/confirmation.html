@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Debtr - Crypto Submission</title>
+        <title>Debtr - Confirmation</title>
         <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/debtr-logo.png') }}"/>
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
@@ -49,54 +49,7 @@
         </nav>
 
          <!-- Mashead header-->
-        <header class="masthead">
-            <div class="container px-5">
-                <div class="container">
-                    <h3 class="display-3 mb-3">Exchange Rate</h3>
-                    <p>Live Exchange Rates</p>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        {% for rate_elements in rates %}
-                            <p>{{ rate_elements }} </p>
-                        {% endfor %}
-                    </div>
-                    <p>Median Exchange Rate: {{median_rate}}</p>
-
-                    <!-- Expenses in selected cryptocurrency -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Expenses in {{currency.upper()}}</div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            {% for converted_expense_elements in converted_expenses %}
-                                                <p>{{ converted_expense_elements }} </p>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Wallet Addresses -->
-                    <form>
-                        <label for="fname">Your Wallet Address:</label><br>
-                        <input type="text" id="sender_wallet_address"><br>
-                        <label for="lname">Recipient's Wallet Address:</label><br>
-                        <input type="text" id="recipient_wallet_address"><br><br>
-                    </form>
-
-                    <button id="executeButton" class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" 
-                    style="background-color: #2B0245" 
-                    onclick="document.location.href = '/transaction_confirmation">
-                                Execute Smart Contract
-                    </button>
-
-                </div>
-            </div>
-        </header>
+        
         <!-- Footer-->
         <footer class="bg-black text-center py-5">
             <div class="container px-5">
