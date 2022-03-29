@@ -92,11 +92,32 @@ def authorize_callback():
 
 @app.route('/crypto_submit')
 def submit_crypto():
+	user = s.getCurrentUser()
+
 	currency_form = request.args.get('currency')
-	return render_template('crypto_submit.html',currency=currency_form)
+	#currency_form is in lower case. Need to make it upper case for the get_rates function!
+	exchange_rates_tuples = get_rates(currency,currency_form.upper())
+	# List of tuples in form of: ('CAD', 'ETH', 0.00023622043649828227)
+	exchange_rates = [x[2] for x in exchange_rates_tuples]
+	median_exchange_rate = get_median_rate(exchange_rates_tuples)
 
-        # return render_template('crypto_submit.html', ButtonPressed = ButtonPressed)
+	global people
+	expenses = s.getExpenses(group_id=group_id,limit=255)
+	group = s.getGroup(group_id)
+	people = [user.getFirstName() for user in group.getMembers()]
+	people_dict = {user.getId():user.getFirstName() for user in group.getMembers()}
+	formatted_expenses = [[(people_dict[payment.getFromUser()],
+		people_dict[payment.getToUser()],
+		payment.getAmount()) for payment in expense.getRepayments() if payment.getFromUser() in people_dict and payment.getToUser() in people_dict] for expense in expenses]
+	
+	formatted_expenses = [e for e in formatted_expenses if len(e) != 0]
 
+	debts = np.concatenate(formatted_expenses)
+	simplified_debts = simplify_debts(debts)
+	converted_debts = convert_transactions(simplified_debts,median_exchange_rate)
+
+
+	return render_template('crypto_submit.html',name=user.getFirstName(),currency=currency_form, rates=exchange_rates, median_rate=median_exchange_rate, converted_expenses=show_crypto_transactions(converted_debts,currency_form.upper()))
 
 def create_app(config_file):
 	app.config.from_pyfile(config_file)  # Configure application with settings file, not strictly necessary
@@ -163,6 +184,15 @@ def show_transactions(transactions, currency_code):
 			transaction_list.append(f"{debtor} owes {creditor} {round(value,2)} {currency_code}")
 		else:
 			transaction_list.append(f"{creditor} owes {debtor} {round(-value,2)} {currency_code}")
+	return transaction_list
+
+def show_crypto_transactions(transactions, cryptocurrency_code):
+	transaction_list = []
+	for (debtor, creditor, value) in transactions:
+		if value > 0:
+			transaction_list.append(f"{debtor} owes {creditor} {round(value,6)} {cryptocurrency_code}")
+		else:
+			transaction_list.append(f"{creditor} owes {debtor} {round(-value,6)} {cryptocurrency_code}")
 	return transaction_list
 
 def compute_balances(debts):

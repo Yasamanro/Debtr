@@ -53,41 +53,47 @@
             <div class="container px-5">
                 <div class="container">
                     <h3 class="display-3 mb-3">Exchange Rate</h3>
+                    <p>Live Exchange Rates</p>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        {% for rate_elements in rates %}
+                            <p>{{ rate_elements }} </p>
+                        {% endfor %}
+                    </div>
+                    <p>Median Exchange Rate: {{median_rate}}</p>
 
-                    <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Expenses</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                {% for expense_element in expenses %}
-                                                    <p>{{ expense_element }} </p>
-                                                {% endfor %}
-                                            </div>
+                    <!-- Expenses in selected cryptocurrency -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Expenses in {{currency.upper()}}</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                            {% for converted_expense_elements in converted_expenses %}
+                                                <p>{{ converted_expense_elements }} </p>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    <form>    
-                        <div class="form-group">
-                            <label for="currency">Choose Cryptocurrency for conversion: </label>
-                            <select id="currency" name="currency">
-                                <option value="btc">BTC</option>
-                                <option value="eth">ETH</option>
-                                <option value="cardano">Cardano</option>
-                            </select>
-                        </div>
-                        <div>
-                            <button type="submit" class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" 
-                                    style="background-color: #2B0245" value="submit_crypto">
-                                Submit
-                            </button>
-                        </div>
+                    </div>
+
+                    <!-- Wallet Addresses -->
+                    <form>
+                        <label for="fname">Your Wallet Address:</label><br>
+                        <input type="text" id="sender_wallet_address"><br>
+                        <label for="lname">Recipient's Wallet Address:</label><br>
+                        <input type="text" id="recipient_wallet_address"><br><br>
                     </form>
+
+                    <button id="cryptoSubmitButton" class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" 
+                    style="background-color: #2B0245" 
+                    onclick="document.location.href = '/crypto_submit?currency=' + document.getElementById('currency').value;">
+                                Execute Smart Contract
+                    </button>
+
                 </div>
             </div>
         </header>
