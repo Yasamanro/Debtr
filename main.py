@@ -123,7 +123,9 @@ def submit_crypto():
 # Page 3 - Summary/Confirmation of transaction
 @app.route('/transaction_confirmation')
 def confirmation():
-	return render_template('confirmation.html')
+	user = s.getCurrentUser()
+
+	return render_template('confirmation.html', name=user.getFirstName())
 
 
 def create_app(config_file):
