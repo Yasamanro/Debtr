@@ -6,16 +6,14 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Debtr</title>
-        <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/debtr-plain-logo.png') }}" />
-        <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
     </head>
     <body>
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container px-5">
-                <a class="navbar-brand" href="#!"><img src="{{ url_for('static', filename='assets/debtr-logo.png') }}" width="70%" height="50%" alt="Debtr"></a>
+                <a class="navbar-brand" href="#!"><img src="{{ url_for('static', filename='assets/debtr-logo.png') }}" width="75%" height="50%" alt="Debtr"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -29,16 +27,6 @@
         </nav>
         <!-- Page Content-->
         <div class="container px-4 px-lg-5">
-            <!-- Heading Row-->
-<!--             <div class="row gx-4 gx-lg-5 align-items-center my-5">
-                <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="{{ url_for('static', filename='assets/debtr-logo.png') }}" alt="..." /></div>
-                <div class="col-lg-5">
-                    <h1 class="font-weight-light">Debtr, the better expense sharing app!</h1>
-                    <p>This is a template that is great for small businesses. It doesn't have too much fancy flare to it, but it makes a great use of the standard Bootstrap core components. Feel free to use this template for any project you want!</p>
-                    <a class="btn btn-primary" href="#!">Call to Action!</a>
-                </div>
-            </div> -->
-            <!-- Call to Action-->
             <div class="card text-white bg-secondary my-5 py-4 text-center">
                 <div class="card-body"><p class="text-white m-0">Preferred Fiat Currency: {{currency}}</p></div>
             </div>
