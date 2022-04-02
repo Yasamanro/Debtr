@@ -20,30 +20,6 @@ client_id = "iA4axoPLQVBOUOilnnS9XTNATl24sjOQITrNIt2h"
 s = Splitwise(client_id,"ffBc3UncyGtK8dS6coOOc7EiJz4qMW2zHjE6Cu0B")
 group_id = 12328749
 
-# truffle development blockchain address
-blockchain_address = 'http://127.0.0.1:9545'
-# Client instance to interact with the blockchain
-web3 = Web3(HTTPProvider(blockchain_address))
-# Set the default account (so we don't need to set the "from" for every transaction call)
-web3.eth.defaultAccount = web3.eth.accounts[0]
-
-# Path to the compiled contract JSON file
-compiled_contract_path = 'build/contracts/HelloWorld.json'
-# Deployed contract address (see `migrate` command output: `contract address`)
-deployed_contract_address = '0x6Fd2aB69495016fF5257b80f4C9826204763C1CD'
-
-with open(compiled_contract_path) as file:
-    contract_json = json.load(file)  # load contract info as JSON
-    contract_abi = contract_json['abi']  # fetch contract's abi - necessary to call its functions
-
-# Fetch deployed contract reference
-contract = web3.eth.contract(address=deployed_contract_address, abi=contract_abi)
-
-# Call contract function (this is not persisted to the blockchain)
-message = contract.functions.sayHello().call()
-
-print(message)
-
 @app.route("/")
 def home():
 	return authorize()
@@ -150,6 +126,7 @@ def submit_crypto():
 @app.route('/transaction_confirmation')
 def confirmation():
 	user = s.getCurrentUser()
+	deploy_contract()
 
 	return render_template('confirmation.html', name=user.getFirstName())
 
@@ -158,6 +135,33 @@ def create_app(config_file):
 	app.config.from_pyfile(config_file)  # Configure application with settings file, not strictly necessary
 	app.register_blueprint(home_view)  # Register url's so application knows what to do
 	return app
+
+def deploy_contract():
+	# truffle development blockchain address
+	blockchain_address = 'http://127.0.0.1:9545'
+	# Client instance to interact with the blockchain
+	web3 = Web3(HTTPProvider(blockchain_address))
+	# Set the default account (so we don't need to set the "from" for every transaction call)
+	web3.eth.defaultAccount = web3.eth.accounts[0]
+
+	# Path to the compiled contract JSON file
+	compiled_contract_path = 'build/contracts/HelloWorld.json'
+	# Deployed contract address (see `migrate` command output: `contract address`)
+	deployed_contract_address = '0x6Fd2aB69495016fF5257b80f4C9826204763C1CD'
+
+	with open(compiled_contract_path) as file:
+	    contract_json = json.load(file)  # load contract info as JSON
+	    contract_abi = contract_json['abi']  # fetch contract's abi - necessary to call its functions
+
+	# Fetch deployed contract reference
+	contract = web3.eth.contract(address=deployed_contract_address, abi=contract_abi)
+
+	# Call contract function (this is not persisted to the blockchain)
+	message = contract.functions.sayHello().call()
+
+	print(message)
+	return message
+
 
 # Code for getting exchange rates
 def get_coinlayer_rate(from_currency,to_currency):
