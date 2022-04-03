@@ -63,15 +63,17 @@
                             <p class="card-text">                            
                                 <form>
                                     <label for="fname">Your Wallet Address:</label><br>
-                                    <input type="text" id="sender_wallet_address"><br>
+                                    <input type="text" id="sender_address"><br>
                                     <label for="lname">Recipient's Wallet Address:</label><br>
-                                    <input type="text" id="recipient_wallet_address"><br><br>
+                                    <input type="text" id="recipient_address"><br><br>
                                 </form>
                             </p>
                         </div>
-                        <div class="card-footer"><button id="cryptoSubmitButton" class="btn btn-dark btn-primary rounded-pill px-3 mb-2 mb-lg-0" style="color:#FEB93F" onclick="document.location.href = '/transaction_confirmation'">
+                        <div class="card-footer">
+                            <button id="cryptoSubmitButton" class="btn btn-dark btn-primary rounded-pill px-3 mb-2 mb-lg-0" style="color:#FEB93F" onclick="myFunction()">
                                 Execute Smart Contract
-                    </button></div>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -84,5 +86,16 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="{{ url_for('static', filename='css/scripts.js') }}"></script>
+        <script>
+            function myFunction() {
+                let address_1 = document.getElementById('sender_address').value
+                let address_2 = document.getElementById('recipient_address').value
+                let base_address = '/transaction_confirmation?sender_address='
+                let second_address = '&recipient_address='
+                let sender_address_url = base_address.concat(address_1);
+                let recipient_address_url = second_address.concat(address_2);
+                document.location.href =  sender_address_url.concat(recipient_address_url);
+            }
+        </script>
     </body>
 </html>

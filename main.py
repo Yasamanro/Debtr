@@ -126,6 +126,9 @@ def submit_crypto():
 @app.route('/transaction_confirmation')
 def confirmation():
 	user = s.getCurrentUser()
+	sender_address = request.args.get('sender_address')
+	recipient_address = request.args.get('recipient_address')
+
 	deploy_contract()
 
 	return render_template('confirmation.html', name=user.getFirstName())
