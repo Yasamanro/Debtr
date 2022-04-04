@@ -27,26 +27,27 @@
         </nav>
         <!-- Page Content-->
         <div class="container px-4 px-lg-5">
-            <!-- Call to Action-->
-            <div class="card text-white bg-secondary my-5 py-4 text-center">
-                <div class="card-body"><p class="text-white m-0">Median Exchange Rate: {{median_rate}}</p></div>
-            </div>
             <!-- Content Row-->
             <div class="row gx-4 gx-lg-5">
                 <div class="col-md-12 mb-5">
-                    <div class="card h-100">
-                        <div class="card-body">
+                    <div class="card h-100" style="margin-top: 30px;">
+                        <div class="card-body" style="padding-top: 20px">
                             <h3 class="card-title">Transaction Summary</h3>
+                            <p class="card-text">Your Wallet Address: {{sender_address}}</p>
+                            <p class="card-text">Recipient's Wallet Address: {{recipient_address}}</p>
+                            <p class="card-text">Gas Limit: {{gas_limit}}</p>
+                            <p class="card-text">Gas Price: {{gas_price}}</p>
                             <p class="card-text">                                                
                                 {% for expense_element in expenses %}
                                     <p>{{ expense_element }} </p>
-                                {% endfor %}</p>
+                                {% endfor %}
+                            </p>
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <button id="cryptoSubmitButton" class="btn btn-dark btn-primary rounded-pill px-3 mb-2 mb-lg-0" style="color:#FEB93F" onclick="document.location.href = '/welcome'">
+                        <div class="card-footer" style="margin: 20px">
+                            <button id="cryptoSubmitButton" class="btn btn-dark btn-primary rounded-pill px-3 mb-2 mb-lg-0" style="color:#FEB93F" onclick="document.location.href = '/welcome'">
                                 Back to Expenses
-                        </button>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -170,7 +170,7 @@ def confirmation():
 
 	# deploy_contract()
 
-	return render_template('confirmation.html', name=user.getFirstName())
+	return render_template('confirmation.html', name=user.getFirstName(),sender_address=public_address,recipient_address=recipient_address, gas_limit='21000', gas_price='40 gwei')
 
 
 def create_app(config_file):
