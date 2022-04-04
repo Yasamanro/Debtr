@@ -116,12 +116,14 @@ def submit_crypto():
 	
 	formatted_expenses = [e for e in formatted_expenses if len(e) != 0]
 
+	others = people[1:]
+
 	debts = np.concatenate(formatted_expenses)
 	simplified_debts = simplify_debts(debts)
 	converted_debts = convert_transactions(simplified_debts,median_exchange_rate)
 
 
-	return render_template('crypto_submit.html',name=user.getFirstName(),currency=currency_form, rates=exchange_rates, median_rate=median_exchange_rate, converted_expenses=show_crypto_transactions(converted_debts,currency_form.upper()))
+	return render_template('crypto_submit.html',name=user.getFirstName(),currency=currency_form, rates=exchange_rates, median_rate=median_exchange_rate, converted_expenses=show_crypto_transactions(converted_debts,currency_form.upper()), others=others)
 
 # Page 3 - Summary/Confirmation of transaction
 @app.route('/transaction_confirmation')
@@ -133,7 +135,7 @@ def confirmation():
 	w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:7545'))
 
 	x = w3.isConnected()
-	print(x)
+	# print(x)
 
 	public_address = '0xb7c8C7968b29D32a4567D5acD02C6BD8De9C3c87'
 	recipient_address = '0x1A074ce4ff8F1dBfb117EB48D778Dfd48EA3E8E2'

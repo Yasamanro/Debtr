@@ -60,12 +60,19 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h3 class="card-title">Settle expenses in {{currency.upper()}}</h3>
-                            <p class="card-text">                            
+                            <p class="card-text">   
+                                <label for="fname">Select Friend to Settle Epenses:</label><br>
+                                <select id="recipients">
+                                    <option disabled selected value="Default">-</option>
+                                    {% for option in others %}
+                                    <option value={{option}}>{{option}}</option>
+                                    {% endfor %}
+                                </select>
                                 <form>
-                                    <label for="fname">Your Wallet Address:</label><br>
-                                    <input type="text" id="sender_address"><br>
-                                    <label for="lname">Recipient's Wallet Address:</label><br>
-                                    <input type="text" id="recipient_address"><br><br>
+                                    <label>Your Wallet Address:</label><br>
+                                    <input type="text" id="sender_address" style="width: 100%;"><br>
+                                    <label id="recipient">Recipient's Wallet Address:</label><br>
+                                    <input type="text" id="recipient_address" style="width: 100%;"><br><br>
                                 </form>
                             </p>
                         </div>
@@ -95,6 +102,13 @@
                 let sender_address_url = base_address.concat(address_1);
                 let recipient_address_url = second_address.concat(address_2);
                 document.location.href =  sender_address_url.concat(recipient_address_url);
+            }
+        </script>
+        <script type="text/javascript">
+            var e = document.getElementById("recipients");
+            e.onchange = function() {
+                var strUser = e.options[e.selectedIndex].value;
+                document.getElementById('recipient').innerHTML = strUser + "'s Wallet Address";
             }
         </script>
     </body>
