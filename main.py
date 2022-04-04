@@ -1,4 +1,6 @@
 from flask import Flask, redirect, request, render_template
+from web3 import Web3, HTTPProvider
+import os
 import requests
 import json
 import pandas as pd
@@ -7,7 +9,6 @@ import itertools
 from splitwise import Splitwise	
 import numpy as np
 from coinapi_rest_v1.restapi import CoinAPIv1
-from web3 import Web3, HTTPProvider
 import ssl
 from nomics import Nomics
 
@@ -129,7 +130,43 @@ def confirmation():
 	sender_address = request.args.get('sender_address')
 	recipient_address = request.args.get('recipient_address')
 
-	deploy_contract()
+	w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:7545'))
+
+	x = w3.isConnected()
+	print(x)
+
+	public_address = '0xb7c8C7968b29D32a4567D5acD02C6BD8De9C3c87'
+	recipient_address = '0x1A074ce4ff8F1dBfb117EB48D778Dfd48EA3E8E2'
+	private_key = '3113ebf13b197abff8decd294dfb002f833b7963950bfb06488febf8e8676683'
+
+	print(private_key)
+
+	address1 = Web3.toChecksumAddress(public_address)
+	address2 = Web3.toChecksumAddress(recipient_address)
+
+	# a variable to have to send with any transaction
+	nonce = w3.eth.getTransactionCount(address1)
+
+	print(w3.eth.getBalance(public_address))
+
+	# Wei is the smallest denomination of ether
+	# Gas price in wei. typical Gas Price
+	tx = {
+		'nonce': nonce,
+		'to': address2,
+		'value': w3.toWei(.001, 'ether'),
+		'gas': 21000,
+		'gasPrice': w3.toWei(40, 'gwei')
+	}
+
+	#sign and send the transaction
+	signed_tx = w3.eth.account.signTransaction(tx, private_key)
+
+	tx_hash = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
+
+	print(nonce)
+
+	# deploy_contract()
 
 	return render_template('confirmation.html', name=user.getFirstName())
 
